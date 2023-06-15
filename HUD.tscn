@@ -1,0 +1,45 @@
+[gd_scene load_steps=4 format=3 uid="uid://dry3mqtd2jiys"]
+
+[ext_resource type="Script" path="res://HUD.gd" id="1_t1rg1"]
+[ext_resource type="FontFile" uid="uid://b15hjqdg7pgqp" path="res://assets/fonts/bloccer/bloccer.ttf" id="2_l28vu"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_dq0pb"]
+font = ExtResource("2_l28vu")
+font_size = 100
+shadow_size = 6
+shadow_color = Color(1, 0, 0, 1)
+shadow_offset = Vector2(6, 6)
+
+[node name="HUD" type="CanvasLayer"]
+script = ExtResource("1_t1rg1")
+
+[node name="Overlay" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -1880.0
+offset_bottom = -1040.0
+
+[node name="Label" type="Label" parent="Overlay"]
+layout_mode = 2
+offset_right = 1920.0
+offset_bottom = 192.0
+text = "0 : 0"
+label_settings = SubResource("LabelSettings_dq0pb")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Main Menu" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Options" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0

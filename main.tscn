@@ -1,154 +1,50 @@
-[gd_scene load_steps=11 format=3 uid="uid://dmp00irlufvds"]
+[gd_scene load_steps=9 format=3 uid="uid://dmp00irlufvds"]
 
 [ext_resource type="PackedScene" uid="uid://d3nu0fd32t7af" path="res://player1.tscn" id="1_6du6e"]
-[ext_resource type="PackedScene" uid="uid://bkreyc31524ac" path="res://player2.tscn" id="2_16v2l"]
+[ext_resource type="Script" path="res://main.gd" id="1_eqi8e"]
+[ext_resource type="PackedScene" uid="uid://cwejcl48pjoaa" path="res://mapP.tscn" id="1_yo65n"]
+[ext_resource type="PackedScene" uid="uid://b5o8ale5i711h" path="res://player2.tscn" id="2_16v2l"]
+[ext_resource type="Script" path="res://P1Goal.gd" id="5_b5t54"]
+[ext_resource type="Script" path="res://P2Goal.gd" id="6_nko2g"]
+[ext_resource type="PackedScene" uid="uid://dry3mqtd2jiys" path="res://HUD.tscn" id="6_yt6ln"]
 
-[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_xbvo7"]
-friction = 0.0
-bounce = 8.0
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_6q21c"]
-size = Vector2(1935.5, 24)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_bed8p"]
-size = Vector2(1935.5, 24)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_symk3"]
-size = Vector2(24, 384)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_xrij8"]
-size = Vector2(24, 384)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_cwkcj"]
-size = Vector2(24, 392)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_2n0u0"]
-size = Vector2(24, 392)
-
-[sub_resource type="TileSet" id="TileSet_x7gx5"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qoayr"]
+size = Vector2(192, 1600)
 
 [node name="Main" type="Node"]
+script = ExtResource("1_eqi8e")
 
-[node name="StaticBody2D" type="StaticBody2D" parent="."]
-physics_material_override = SubResource("PhysicsMaterial_xbvo7")
+[node name="Node2D" type="Node2D" parent="."]
 
-[node name="Control" type="Control" parent="StaticBody2D"]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="ColorRect8" type="ColorRect" parent="StaticBody2D/Control"]
-layout_mode = 0
-offset_left = 960.0
-offset_top = -8.0
-offset_right = 1928.0
-offset_bottom = 1088.0
-color = Color(0.0627451, 0.0745098, 0.129412, 1)
-
-[node name="ColorRect7" type="ColorRect" parent="StaticBody2D/Control"]
-layout_mode = 0
-offset_left = -8.0
-offset_top = -8.0
-offset_right = 960.0
-offset_bottom = 1088.0
-color = Color(0.14902, 0.0392157, 0.0156863, 1)
-
-[node name="ColorRect" type="ColorRect" parent="StaticBody2D/Control"]
-layout_mode = 0
-offset_left = -8.0
-offset_top = -8.0
-offset_right = 16.0
-offset_bottom = 384.0
-color = Color(1, 0, 0, 1)
-
-[node name="ColorRect4" type="ColorRect" parent="StaticBody2D/Control"]
-layout_mode = 0
-offset_left = -8.0
-offset_top = 704.0
-offset_right = 16.0
-offset_bottom = 1088.0
-color = Color(1, 0, 0, 1)
-
-[node name="ColorRect5" type="ColorRect" parent="StaticBody2D/Control"]
-layout_mode = 0
-offset_left = 1904.0
-offset_top = 704.0
-offset_right = 1928.0
-offset_bottom = 1088.0
-color = Color(0, 0, 1, 1)
-
-[node name="ColorRect6" type="ColorRect" parent="StaticBody2D/Control"]
-layout_mode = 0
-offset_left = 1904.0
-offset_top = -8.0
-offset_right = 1928.0
-offset_bottom = 384.0
-color = Color(0, 0, 1, 1)
-
-[node name="ColorRect2" type="ColorRect" parent="StaticBody2D/Control"]
-layout_mode = 0
-offset_left = -8.0
-offset_top = -8.0
-offset_right = 1928.0
-offset_bottom = 16.0
-
-[node name="ColorRect3" type="ColorRect" parent="StaticBody2D/Control"]
-layout_mode = 0
-offset_left = -8.0
-offset_top = 1064.0
-offset_right = 1928.0
-offset_bottom = 1088.0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
-position = Vector2(960, 4)
-shape = SubResource("RectangleShape2D_6q21c")
-
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="StaticBody2D"]
-position = Vector2(960, 1076)
-shape = SubResource("RectangleShape2D_bed8p")
-
-[node name="CollisionShape2D3" type="CollisionShape2D" parent="StaticBody2D"]
-position = Vector2(4, 896)
-shape = SubResource("RectangleShape2D_symk3")
-
-[node name="CollisionShape2D4" type="CollisionShape2D" parent="StaticBody2D"]
-position = Vector2(1916, 896)
-shape = SubResource("RectangleShape2D_xrij8")
-
-[node name="CollisionShape2D5" type="CollisionShape2D" parent="StaticBody2D"]
-position = Vector2(1916, 188)
-shape = SubResource("RectangleShape2D_cwkcj")
-
-[node name="CollisionShape2D6" type="CollisionShape2D" parent="StaticBody2D"]
-position = Vector2(4, 188)
-shape = SubResource("RectangleShape2D_2n0u0")
-
-[node name="P1Pos" type="Marker2D" parent="StaticBody2D"]
-position = Vector2(384, 544)
-
-[node name="P2Pos" type="Marker2D" parent="StaticBody2D"]
-position = Vector2(1536, 544)
+[node name="StaticBody2D" parent="Node2D" instance=ExtResource("1_yo65n")]
 
 [node name="Player1" parent="." instance=ExtResource("1_6du6e")]
 position = Vector2(384, 544)
 collision_layer = 4099
 collision_mask = 3
 
-[node name="CharacterBody2D" parent="." instance=ExtResource("2_16v2l")]
+[node name="Player2" parent="." instance=ExtResource("2_16v2l")]
 position = Vector2(1536, 544)
 
-[node name="TileMap" type="TileMap" parent="."]
-tile_set = SubResource("TileSet_x7gx5")
-format = 2
-layer_0/name = "background"
-layer_1/name = "foreground"
-layer_1/enabled = true
-layer_1/modulate = Color(1, 1, 1, 1)
-layer_1/y_sort_enabled = false
-layer_1/y_sort_origin = 0
-layer_1/z_index = 0
-layer_1/tile_data = PackedInt32Array()
+[node name="P1Goal" type="Area2D" parent="."]
+script = ExtResource("5_b5t54")
 
-[connection signal="player2_hit" from="Player1" to="CharacterBody2D" method="_on_player_2_hit"]
-[connection signal="player1_hit" from="CharacterBody2D" to="Player1" method="_on_player_1_hit"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="P1Goal"]
+position = Vector2(-224, 544)
+shape = SubResource("RectangleShape2D_qoayr")
+
+[node name="P2Goal" type="Area2D" parent="."]
+script = ExtResource("6_nko2g")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="P2Goal"]
+position = Vector2(2144, 544)
+shape = SubResource("RectangleShape2D_qoayr")
+
+[node name="HUD" parent="." instance=ExtResource("6_yt6ln")]
+
+[connection signal="goal" from="Player1" to="." method="_on_goal"]
+[connection signal="player2_hit" from="Player1" to="Player2" method="_on_player_2_hit"]
+[connection signal="goal" from="Player2" to="." method="_on_goal"]
+[connection signal="player1_hit" from="Player2" to="Player1" method="_on_player_1_hit"]
+[connection signal="body_entered" from="P1Goal" to="P1Goal" method="_on_body_entered"]
+[connection signal="body_entered" from="P2Goal" to="P2Goal" method="_on_body_entered"]

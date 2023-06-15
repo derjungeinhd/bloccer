@@ -1,0 +1,127 @@
+[gd_scene load_steps=9 format=3 uid="uid://cwejcl48pjoaa"]
+
+[ext_resource type="Script" path="res://map.gd" id="1_jdngp"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_xbvo7"]
+friction = 0.0
+bounce = 8.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6q21c"]
+size = Vector2(1935.5, 24)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bed8p"]
+size = Vector2(1935.5, 24)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_symk3"]
+size = Vector2(24, 384)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xrij8"]
+size = Vector2(24, 384)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cwkcj"]
+size = Vector2(24, 392)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2n0u0"]
+size = Vector2(24, 392)
+
+[node name="StaticBody2D" type="StaticBody2D"]
+physics_material_override = SubResource("PhysicsMaterial_xbvo7")
+script = ExtResource("1_jdngp")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="ColorRect8" type="ColorRect" parent="Control"]
+layout_mode = 0
+offset_left = 960.0
+offset_top = -8.0
+offset_right = 1928.0
+offset_bottom = 1088.0
+color = Color(0.0627451, 0.0745098, 0.129412, 1)
+
+[node name="ColorRect7" type="ColorRect" parent="Control"]
+layout_mode = 0
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 960.0
+offset_bottom = 1088.0
+color = Color(0.14902, 0.0392157, 0.0156863, 1)
+
+[node name="ColorRect" type="ColorRect" parent="Control"]
+layout_mode = 0
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 16.0
+offset_bottom = 384.0
+color = Color(1, 0, 0, 1)
+
+[node name="ColorRect4" type="ColorRect" parent="Control"]
+layout_mode = 0
+offset_left = -8.0
+offset_top = 704.0
+offset_right = 16.0
+offset_bottom = 1088.0
+color = Color(1, 0, 0, 1)
+
+[node name="ColorRect5" type="ColorRect" parent="Control"]
+layout_mode = 0
+offset_left = 1904.0
+offset_top = 704.0
+offset_right = 1928.0
+offset_bottom = 1088.0
+color = Color(0, 0, 1, 1)
+
+[node name="ColorRect6" type="ColorRect" parent="Control"]
+layout_mode = 0
+offset_left = 1904.0
+offset_top = -8.0
+offset_right = 1928.0
+offset_bottom = 384.0
+color = Color(0, 0, 1, 1)
+
+[node name="ColorRect2" type="ColorRect" parent="Control"]
+layout_mode = 0
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 1928.0
+offset_bottom = 16.0
+
+[node name="ColorRect3" type="ColorRect" parent="Control"]
+layout_mode = 0
+offset_left = -8.0
+offset_top = 1064.0
+offset_right = 1928.0
+offset_bottom = 1088.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(960, 4)
+shape = SubResource("RectangleShape2D_6q21c")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="."]
+position = Vector2(960, 1076)
+shape = SubResource("RectangleShape2D_bed8p")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="."]
+position = Vector2(4, 896)
+shape = SubResource("RectangleShape2D_symk3")
+
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="."]
+position = Vector2(1916, 896)
+shape = SubResource("RectangleShape2D_xrij8")
+
+[node name="CollisionShape2D5" type="CollisionShape2D" parent="."]
+position = Vector2(1916, 188)
+shape = SubResource("RectangleShape2D_cwkcj")
+
+[node name="CollisionShape2D6" type="CollisionShape2D" parent="."]
+position = Vector2(4, 188)
+shape = SubResource("RectangleShape2D_2n0u0")
+
+[node name="P1Pos" type="Marker2D" parent="."]
+position = Vector2(384, 544)
+
+[node name="P2Pos" type="Marker2D" parent="."]
+position = Vector2(1536, 544)
