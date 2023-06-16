@@ -1,0 +1,78 @@
+[gd_scene load_steps=3 format=3 uid="uid://bu46gjdmpwx11"]
+
+[ext_resource type="Texture2D" uid="uid://6u1ofw0ymlx7" path="res://assets/map2.png" id="1_35e28"]
+[ext_resource type="Script" path="res://maps/map.gd" id="1_sd563"]
+
+[node name="StaticBody2D" type="StaticBody2D"]
+script = ExtResource("1_sd563")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Sprite2D" type="Sprite2D" parent="Control"]
+position = Vector2(960, 540)
+scale = Vector2(1.00833, 1.01481)
+texture = ExtResource("1_35e28")
+
+[node name="ColorRect" type="ColorRect" parent="Control"]
+layout_mode = 0
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 22.0
+offset_bottom = 266.0
+color = Color(0.631373, 0.133333, 0, 1)
+
+[node name="ColorRect4" type="ColorRect" parent="Control"]
+layout_mode = 0
+offset_left = -8.0
+offset_top = 814.0
+offset_right = 22.0
+offset_bottom = 1088.0
+color = Color(0.631373, 0.133333, 0, 1)
+
+[node name="ColorRect5" type="ColorRect" parent="Control"]
+layout_mode = 0
+offset_left = 1898.0
+offset_top = 814.0
+offset_right = 1928.0
+offset_bottom = 1088.0
+color = Color(0.631373, 0.133333, 0, 1)
+
+[node name="ColorRect6" type="ColorRect" parent="Control"]
+layout_mode = 0
+offset_left = 1898.0
+offset_top = -8.0
+offset_right = 1928.0
+offset_bottom = 266.0
+color = Color(0.631373, 0.133333, 0, 1)
+
+[node name="ColorRect2" type="ColorRect" parent="Control"]
+layout_mode = 0
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 1928.0
+offset_bottom = 22.0
+color = Color(0.631373, 0.133333, 0, 1)
+
+[node name="ColorRect3" type="ColorRect" parent="Control"]
+layout_mode = 0
+offset_left = -8.0
+offset_top = 1058.0
+offset_right = 1928.0
+offset_bottom = 1088.0
+color = Color(0.631373, 0.133333, 0, 1)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(-8, -8, -8, 266, 22, 266, 22, 22, 1898, 22, 1898, 266, 1928, 266, 1928, -8)
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(-8, 814, -8, 1088, 1928, 1088, 1928, 814, 1898, 814, 1898, 1058, 22, 1058, 22, 814)
+
+[node name="P1Pos" type="Marker2D" parent="."]
+position = Vector2(265, 544)
+
+[node name="P2Pos" type="Marker2D" parent="."]
+position = Vector2(1660, 544)

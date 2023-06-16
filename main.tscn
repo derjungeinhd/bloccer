@@ -1,8 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://dmp00irlufvds"]
+[gd_scene load_steps=8 format=3 uid="uid://dmp00irlufvds"]
 
 [ext_resource type="PackedScene" uid="uid://d3nu0fd32t7af" path="res://player1.tscn" id="1_6du6e"]
 [ext_resource type="Script" path="res://main.gd" id="1_eqi8e"]
-[ext_resource type="PackedScene" uid="uid://cwejcl48pjoaa" path="res://mapP.tscn" id="1_yo65n"]
 [ext_resource type="PackedScene" uid="uid://b5o8ale5i711h" path="res://player2.tscn" id="2_16v2l"]
 [ext_resource type="Script" path="res://P1Goal.gd" id="5_b5t54"]
 [ext_resource type="Script" path="res://P2Goal.gd" id="6_nko2g"]
@@ -13,10 +12,9 @@ size = Vector2(192, 1600)
 
 [node name="Main" type="Node"]
 script = ExtResource("1_eqi8e")
+metadata/_edit_vertical_guides_ = []
 
 [node name="Node2D" type="Node2D" parent="."]
-
-[node name="StaticBody2D" parent="Node2D" instance=ExtResource("1_yo65n")]
 
 [node name="Player1" parent="." instance=ExtResource("1_6du6e")]
 position = Vector2(384, 544)
@@ -41,10 +39,24 @@ position = Vector2(2144, 544)
 shape = SubResource("RectangleShape2D_qoayr")
 
 [node name="HUD" parent="." instance=ExtResource("6_yt6ln")]
+metadata/_edit_vertical_guides_ = [0.0]
+
+[node name="GoalSoundP1" type="AudioStreamPlayer2D" parent="."]
+position = Vector2(-224, 544)
+
+[node name="GoalSoundP2" type="AudioStreamPlayer2D" parent="."]
+position = Vector2(2144, 544)
+
+[node name="Timer" type="Timer" parent="."]
 
 [connection signal="goal" from="Player1" to="." method="_on_goal"]
 [connection signal="player2_hit" from="Player1" to="Player2" method="_on_player_2_hit"]
 [connection signal="goal" from="Player2" to="." method="_on_goal"]
-[connection signal="player1_hit" from="Player2" to="Player1" method="_on_player_1_hit"]
+[connection signal="player1_hit" from="Player2" to="Player1" method="on_player_1_hit"]
 [connection signal="body_entered" from="P1Goal" to="P1Goal" method="_on_body_entered"]
 [connection signal="body_entered" from="P2Goal" to="P2Goal" method="_on_body_entered"]
+[connection signal="countdown_long_ended" from="HUD" to="." method="_on_countdownlong_ended"]
+[connection signal="countdown_short_ended" from="HUD" to="." method="_on_countdown_ended"]
+[connection signal="initiate_game" from="HUD" to="." method="initiate_game"]
+[connection signal="start_game" from="HUD" to="." method="start_game"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

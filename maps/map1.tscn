@@ -1,0 +1,80 @@
+[gd_scene load_steps=3 format=3 uid="uid://b7iil4nvlqc0m"]
+
+[ext_resource type="Script" path="res://maps/map.gd" id="1_0t742"]
+[ext_resource type="Texture2D" uid="uid://dg62cjv30b7qf" path="res://assets/map1.png" id="1_k6yc6"]
+
+[node name="StaticBody2D" type="StaticBody2D"]
+script = ExtResource("1_0t742")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="ColorRect7" type="ColorRect" parent="Control"]
+layout_mode = 0
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 1928.0
+offset_bottom = 1088.0
+color = Color(0, 0, 0, 1)
+
+[node name="ColorRect" type="ColorRect" parent="Control"]
+layout_mode = 0
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 16.0
+offset_bottom = 365.0
+
+[node name="ColorRect4" type="ColorRect" parent="Control"]
+layout_mode = 0
+offset_left = -8.0
+offset_top = 714.0
+offset_right = 16.0
+offset_bottom = 1088.0
+
+[node name="ColorRect5" type="ColorRect" parent="Control"]
+layout_mode = 0
+offset_left = 1904.0
+offset_top = 714.0
+offset_right = 1928.0
+offset_bottom = 1088.0
+
+[node name="ColorRect6" type="ColorRect" parent="Control"]
+layout_mode = 0
+offset_left = 1904.0
+offset_top = -8.0
+offset_right = 1928.0
+offset_bottom = 366.0
+
+[node name="ColorRect2" type="ColorRect" parent="Control"]
+layout_mode = 0
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 1928.0
+offset_bottom = 16.0
+
+[node name="ColorRect3" type="ColorRect" parent="Control"]
+layout_mode = 0
+offset_left = -8.0
+offset_top = 1064.0
+offset_right = 1928.0
+offset_bottom = 1088.0
+
+[node name="Sprite2D" type="Sprite2D" parent="Control"]
+position = Vector2(960, 540)
+scale = Vector2(0.983333, 0.97037)
+texture = ExtResource("1_k6yc6")
+
+[node name="P1Pos" type="Marker2D" parent="."]
+position = Vector2(384, 544)
+
+[node name="P2Pos" type="Marker2D" parent="."]
+position = Vector2(1536, 544)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(-8, -8, -8, 365, 16, 365, 16, 16, 1904, 16, 1904, 366, 1928, 366, 1928, -8)
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(-8, 714, -8, 1088, 1928, 1088, 1928, 714, 1904, 714, 1904, 1064, 16, 1064, 16, 714)
