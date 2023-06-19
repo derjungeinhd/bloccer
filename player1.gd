@@ -16,6 +16,9 @@ var stamina = max_stamina
 var need_stamina_recharge = false
 var collision_shape
 var collision_shape_type
+var input_device
+var vibration_enabled = true
+
 
 signal player2_hit
 signal goal
@@ -24,7 +27,7 @@ signal goal
 func _ready():
 	collision_shape = $CircleCollisionShape2D
 	collision_shape_type = 0
-	$SquareCollisionShape2D.disabled = true
+	$SquareCollisionShape2D.set_deferred("disabled", true)
 	$SquareCollisionShape2D.hide()
 
 
@@ -67,6 +70,7 @@ func _physics_process(delta):
 			if collider.has_method("on_player_2_hit"):
 				collider.on_player_2_hit(velocity)
 			velocity = velocity.bounce(get_last_slide_collision().get_normal()) * 1.1
+			vibrate(0.3, 0, 0.1)
 		
 		stamina += new_stamina
 		if stamina > max_stamina:
@@ -89,12 +93,14 @@ func check_velocity(v):
 
 func on_player_1_hit(v):
 	velocity += v * 1.1
+	vibrate(0.5, 0, 0.1)
 
 
 func on_goal(goal):
 	is_round_running = false
 	velocity = Vector2.ZERO
 	emit_signal("goal", goal, 0)
+	vibrate(1, 0, 0.2)
 
 
 func reset():
@@ -103,7 +109,7 @@ func reset():
 	speed = initialspeed
 	rotation = 0
 	stamina = max_stamina
-	collision_shape.disabled = false
+	collision_shape.set_deferred("disabled", false)
 
 
 func update(game_state, round_state):
@@ -114,20 +120,19 @@ func update(game_state, round_state):
 func get_stamina():
 	return stamina
 
-
 func stop_collision():
-	collision_shape.disabled = true
+	collision_shape.set_deferred("disabled", true)
 
 
 func switch_collision_shape(new_collision_shape_type):
-	collision_shape.disabled = true
+	collision_shape.set_deferred("disabled", true)
 	collision_shape.hide()
 	match new_collision_shape_type:
 		0:
 			collision_shape = $CircleCollisionShape2D
 		1:
 			collision_shape = $SquareCollisionShape2D
-	collision_shape.disabled = false
+	collision_shape.set_deferred("disabled", false)
 	collision_shape.show()
 
 
@@ -149,3 +154,15 @@ func apply_settings(settings):
 			$AnimatedSprite2D.animation = "square"
 			$AnimatedSprite2D.frame = new_skin[1]
 
+
+func vibrate(weak: float, strong: float, time: float):
+	if vibration_enabled and input_device > 0:
+		Input.start_joy_vibration(input_device - 1, weak, strong, time)
+
+
+func _on_p1_set_input_device(i):
+	input_device = i
+
+
+func _on_vibration_changed(state):
+	vibration_enabled = state

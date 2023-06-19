@@ -6,6 +6,7 @@ const MAP1_PATH = "res://maps/map1.tscn"
 const MAP2_PATH = "res://maps/map2.tscn"
 const MAP3_PATH = "res://maps/map3.tscn"
 const MAP4_PATH = "res://maps/map4.tscn"
+const MAP5_PATH = "res://maps/map5.tscn"
 
 
 var player1_startpos := Vector2(384, 544)
@@ -14,9 +15,9 @@ var goals_p1 = 0
 var goals_p2 = 0
 var is_game_running := false
 var is_round_running := false
-var maps = [MAPP_PATH, MAP1_PATH, MAP2_PATH, MAP3_PATH, MAP4_PATH]
+var maps = [MAPP_PATH, MAP1_PATH, MAP2_PATH, MAP3_PATH, MAP4_PATH, MAP5_PATH]
 var current_map
-var loaded_map = preload(MAP1_PATH)
+var loaded_map
 var max_stamina = 100
 var stamina_player1 = max_stamina
 var stamina_player2 = max_stamina
@@ -26,10 +27,6 @@ var gamemode = 0
 
 func _ready():
 	stop_game()
-	current_map = loaded_map.instantiate()
-	$Node2D.add_child(current_map)
-	player1_startpos = $Node2D/StaticBody2D.get_player1_pos()
-	player2_startpos = $Node2D/StaticBody2D.get_player2_pos()
 
 
 func _physics_process(_delta):
@@ -48,14 +45,12 @@ func stop_game():
 
 
 func initiate_game(settings):
-	print(settings)
-	$Node2D.remove_child(current_map)
 	ResourceLoader.load_threaded_request(maps[settings["map_number"]+1])
 	loaded_map = ResourceLoader.load_threaded_get(maps[settings["map_number"]+1])
 	current_map = loaded_map.instantiate()
 	$Node2D.add_child(current_map)
-	player1_startpos = $Node2D.get_child(-1).get_player1_pos()
-	player2_startpos = $Node2D.get_child(-1).get_player2_pos()
+	player1_startpos = current_map.get_player1_pos()
+	player2_startpos = current_map.get_player2_pos()
 	$Player1.position = player1_startpos
 	$Player2.position = player2_startpos
 	$Player1.apply_settings(settings)
@@ -99,6 +94,7 @@ func reset_round():
 
 
 func _on_goal(goal, player):
+	current_map.fade_in_out_background_music()
 	var goal_case
 	match goal:
 		0:
@@ -122,10 +118,12 @@ func _on_goal(goal, player):
 	$HUD.show_new_score(goals_p1, goals_p2)
 	$HUD.show_goal_status(goal_case)
 	if goals_p1 >= goals_to_win && gamemode == 0:
+		current_map.fade_out_background_music()
 		$HUD.show_winner(0)
 		is_round_running = false
 		is_game_running = false
 	elif goals_p2 >= goals_to_win && gamemode == 0:
+		current_map.fade_out_background_music()
 		$HUD.show_winner(1)
 		is_round_running = false
 		is_game_running = false
@@ -139,6 +137,7 @@ func _on_countdown_ended():
 		$Timer.set_paused(false)
 
 func _on_countdownlong_ended():
+	current_map.fade_in_background_music()
 	is_round_running = true
 	if gamemode == 1:
 		$Timer.start()
@@ -148,9 +147,13 @@ func _on_timer_timeout():
 	if gamemode == 1:
 		is_round_running = false
 		is_game_running = false
+		current_map.fade_out_background_music()
 		if goals_p1 > goals_p2:
 			$HUD.show_winner(0)
 		elif goals_p2 > goals_p1:
 			$HUD.show_winner(1)
 		elif goals_p1 == goals_p2:
 			$HUD.show_remis()
+
+func game_over():
+	$Node2D.remove_child(current_map)

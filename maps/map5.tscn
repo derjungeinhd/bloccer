@@ -1,8 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://36vy53p0v4u3"]
+[gd_scene load_steps=11 format=3 uid="uid://bfqf8d13rabce"]
 
-[ext_resource type="Script" path="res://maps/map.gd" id="1_ta14y"]
-[ext_resource type="Texture2D" uid="uid://bhiu1d6vsx6o8" path="res://assets/maps/map4.png" id="2_yx83v"]
-[ext_resource type="AudioStream" uid="uid://dusvvcek6ie3p" path="res://assets/audio/and_now_action.wav" id="3_qrior"]
+[ext_resource type="AudioStream" uid="uid://bbpv7juri0cty" path="res://assets/audio/a_new_Arrival.wav" id="2_spkaa"]
+[ext_resource type="Script" path="res://maps/map5_plus.gd" id="3_y06jw"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jrloy"]
+size = Vector2(3072, 24)
 
 [sub_resource type="Animation" id="Animation_xh686"]
 resource_name = "fade_in"
@@ -82,8 +84,23 @@ _data = {
 "fade_out": SubResource("Animation_rtj8x")
 }
 
+[sub_resource type="Curve2D" id="Curve2D_xkc5t"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 408, 96, 0, 0, 0, 0, 408, 992)
+}
+point_count = 2
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_x0e4m"]
+size = Vector2(32, 320)
+
+[sub_resource type="Curve2D" id="Curve2D_llrhl"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 1512, 96, 0, 0, 0, 0, 1512, 992)
+}
+point_count = 2
+
 [node name="StaticBody2D" type="StaticBody2D"]
-script = ExtResource("1_ta14y")
+script = ExtResource("3_y06jw")
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 3
@@ -97,31 +114,7 @@ offset_left = -8.0
 offset_top = -8.0
 offset_right = 1928.0
 offset_bottom = 1088.0
-color = Color(0.705882, 0.184314, 0, 1)
-
-[node name="ColorRect" type="ColorRect" parent="Control"]
-layout_mode = 0
-offset_left = -8.0
-offset_top = -8.0
-offset_right = 16.0
-offset_bottom = 424.0
-color = Color(0.392157, 0, 0, 1)
-
-[node name="ColorRect4" type="ColorRect" parent="Control"]
-layout_mode = 0
-offset_left = -8.0
-offset_top = 656.0
-offset_right = 16.0
-offset_bottom = 1088.0
-color = Color(0.392157, 0, 0, 1)
-
-[node name="ColorRect6" type="ColorRect" parent="Control"]
-layout_mode = 0
-offset_left = 1904.0
-offset_top = -8.0
-offset_right = 1928.0
-offset_bottom = 424.0
-color = Color(0.392157, 0, 0, 1)
+color = Color(0, 0, 0, 1)
 
 [node name="ColorRect2" type="ColorRect" parent="Control"]
 layout_mode = 0
@@ -129,15 +122,6 @@ offset_left = -8.0
 offset_top = -8.0
 offset_right = 1928.0
 offset_bottom = 16.0
-color = Color(0.392157, 0, 0, 1)
-
-[node name="ColorRect5" type="ColorRect" parent="Control"]
-layout_mode = 0
-offset_left = 1904.0
-offset_top = 656.0
-offset_right = 1928.0
-offset_bottom = 1088.0
-color = Color(0.392157, 0, 0, 1)
 
 [node name="ColorRect3" type="ColorRect" parent="Control"]
 layout_mode = 0
@@ -145,27 +129,23 @@ offset_left = -8.0
 offset_top = 1064.0
 offset_right = 1928.0
 offset_bottom = 1088.0
-color = Color(0.392157, 0, 0, 1)
 
-[node name="Sprite2D" type="Sprite2D" parent="Control"]
-position = Vector2(960, 540)
-scale = Vector2(0.983333, 0.97037)
-texture = ExtResource("2_yx83v")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(960, 4)
+shape = SubResource("RectangleShape2D_jrloy")
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
-polygon = PackedVector2Array(-8, -8, -8, 424, 16, 424, 16, 16, 1904, 16, 1904, 424, 1928, 424, 1928, -8)
-
-[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="."]
-polygon = PackedVector2Array(-8, 656, -8, 1088, 1928, 1088, 1928, 656, 1904, 656, 1904, 1064, 16, 1064, 16, 656)
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="."]
+position = Vector2(960, 1076)
+shape = SubResource("RectangleShape2D_jrloy")
 
 [node name="P1Pos" type="Marker2D" parent="."]
-position = Vector2(325, 544)
+position = Vector2(192, 544)
 
 [node name="P2Pos" type="Marker2D" parent="."]
-position = Vector2(1600, 544)
+position = Vector2(1728, 544)
 
 [node name="BackgroundMusic" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("3_qrior")
+stream = ExtResource("2_spkaa")
 volume_db = -35.0
 bus = &"Music"
 
@@ -173,3 +153,49 @@ bus = &"Music"
 libraries = {
 "": SubResource("AnimationLibrary_0736m")
 }
+
+[node name="Bouncer1" type="Path2D" parent="."]
+curve = SubResource("Curve2D_xkc5t")
+
+[node name="PathFollow2D" type="PathFollow2D" parent="Bouncer1"]
+position = Vector2(408, 544)
+rotation = 1.5708
+progress = 448.0
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="Bouncer1/PathFollow2D"]
+rotation = 1.5708
+collision_mask = 0
+motion_mode = 1
+platform_on_leave = 2
+
+[node name="ColorRect4" type="ColorRect" parent="Bouncer1/PathFollow2D/CharacterBody2D"]
+offset_left = -16.0
+offset_top = -160.0
+offset_right = 16.0
+offset_bottom = 160.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bouncer1/PathFollow2D/CharacterBody2D"]
+shape = SubResource("RectangleShape2D_x0e4m")
+
+[node name="Bouncer2" type="Path2D" parent="."]
+curve = SubResource("Curve2D_llrhl")
+
+[node name="PathFollow2D" type="PathFollow2D" parent="Bouncer2"]
+position = Vector2(1512, 544)
+rotation = 1.5708
+progress = 448.0
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="Bouncer2/PathFollow2D"]
+rotation = 1.5708
+collision_mask = 0
+motion_mode = 1
+platform_on_leave = 2
+
+[node name="ColorRect6" type="ColorRect" parent="Bouncer2/PathFollow2D/CharacterBody2D"]
+offset_left = -16.0
+offset_top = -160.0
+offset_right = 16.0
+offset_bottom = 160.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bouncer2/PathFollow2D/CharacterBody2D"]
+shape = SubResource("RectangleShape2D_x0e4m")

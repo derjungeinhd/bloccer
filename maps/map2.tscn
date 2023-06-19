@@ -1,7 +1,86 @@
-[gd_scene load_steps=3 format=3 uid="uid://bu46gjdmpwx11"]
+[gd_scene load_steps=8 format=3 uid="uid://bu46gjdmpwx11"]
 
-[ext_resource type="Texture2D" uid="uid://6u1ofw0ymlx7" path="res://assets/map2.png" id="1_35e28"]
+[ext_resource type="Texture2D" uid="uid://6u1ofw0ymlx7" path="res://assets/maps/map2.png" id="1_35e28"]
 [ext_resource type="Script" path="res://maps/map.gd" id="1_sd563"]
+[ext_resource type="AudioStream" uid="uid://dusvvcek6ie3p" path="res://assets/audio/and_now_action.wav" id="3_4enbj"]
+
+[sub_resource type="Animation" id="Animation_xh686"]
+resource_name = "fade_in"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BackgroundMusic:volume_db")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [-35.0, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("BackgroundMusic:playing")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="Animation" id="Animation_xr7ml"]
+resource_name = "fade_in_out"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BackgroundMusic:volume_db")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.9, 1),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [0.0, -11.0, -11.0, 0.0]
+}
+
+[sub_resource type="Animation" id="Animation_rtj8x"]
+resource_name = "fade_out"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BackgroundMusic:volume_db")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, -35.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("BackgroundMusic:playing")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.5),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_0736m"]
+_data = {
+"fade_in": SubResource("Animation_xh686"),
+"fade_in_out": SubResource("Animation_xr7ml"),
+"fade_out": SubResource("Animation_rtj8x")
+}
 
 [node name="StaticBody2D" type="StaticBody2D"]
 script = ExtResource("1_sd563")
@@ -76,3 +155,13 @@ position = Vector2(265, 544)
 
 [node name="P2Pos" type="Marker2D" parent="."]
 position = Vector2(1660, 544)
+
+[node name="BackgroundMusic" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_4enbj")
+volume_db = -35.0
+bus = &"Music"
+
+[node name="MusicControl" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_0736m")
+}

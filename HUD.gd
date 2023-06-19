@@ -6,7 +6,7 @@ var p1_need_stamina_recharge = false
 var p2_need_stamina_recharge = false
 var is_on_start_screen = true
 var map_count = 0
-var map_names = ["Fußballfeld", "Turnhalle", "Tennisplatz", "Basketballplatz"]
+var map_names = ["Fußballfeld", "Turnhalle", "Tennisplatz", "Basketballplatz", "Pong"]
 var p1_choose_input = false
 var p2_choose_input = false
 var p1_actions = ["p1_up", "p1_down", "p1_left", "p1_right", "p1_item", "p1_break", "p1_boost"]
@@ -40,12 +40,22 @@ var is_userspecified = false
 var load_type := 0
 var is_in_options = false
 var options_tab = 0
+var window_size
+var screen_size
+var screen = 0
+var displaymode = 2
+var is_pc
+var vibration_enabled = true
 
 
 signal countdown_short_ended
 signal countdown_long_ended
 signal initiate_game
 signal start_game
+signal p1_set_input_device
+signal p2_set_input_device
+signal vibration_changed
+signal game_over
 
 
 #------------------------------------------------------------------------------------------------------------------------------
@@ -56,8 +66,8 @@ signal start_game
 
 
 func _ready():
+	initiate_display_server()
 	$MainMenu/Panel/AnimationPlayer.play("pre_start_animation")
-	DisplayServer.mouse_set_mode(DisplayServer.MOUSE_MODE_HIDDEN)
 
 
 func _input(event):
@@ -115,11 +125,11 @@ func _input(event):
 			await get_tree().create_timer(0.1).timeout
 			match options_tab:
 				0:
-					$MainMenu/MenuSelect.play(0.0)
+					resolution_option.grab_focus()
 				1:
 					$Options/TabContainer/Audio/Master/VBoxContainer/HSlider.grab_focus()
 				2:
-					$MainMenu/MenuSelect.play(0.0)
+					$Options/TabContainer/Steuerung/Vibration.grab_focus()
 				3:
 					$Options/TabContainer/Info/LinkToGithub.grab_focus()
 		elif event.is_action_released("next_tab"):
@@ -130,13 +140,14 @@ func _input(event):
 			await get_tree().create_timer(0.1).timeout
 			match options_tab:
 				0:
-					$MainMenu/MenuSelect.play(0.0)
+					resolution_option.grab_focus()
 				1:
 					$Options/TabContainer/Audio/Master/VBoxContainer/HSlider.grab_focus()
 				2:
-					$MainMenu/MenuSelect.play(0.0)
+					$Options/TabContainer/Steuerung/Vibration.grab_focus()
 				3:
 					$Options/TabContainer/Info/LinkToGithub.grab_focus()
+
 
 #------------------------------------------------------------------------------------------------------------------------------
 #
@@ -193,12 +204,16 @@ func start_countdown():
 	$Overlay/CountdownShort.play()
 	$Overlay/MainLabelContainer/MainLabel.show()
 	$Overlay/MainLabelContainer/MainLabel.text = "3"
+	vibrate(0.5, 0, 0.1)
 	await get_tree().create_timer(0.3).timeout
 	$Overlay/MainLabelContainer/MainLabel.text = "2"
+	vibrate(0.5, 0, 0.1)
 	await get_tree().create_timer(0.3).timeout
 	$Overlay/MainLabelContainer/MainLabel.text = "1"
+	vibrate(0.5, 0, 0.1)
 	await get_tree().create_timer(0.3).timeout
 	$Overlay/MainLabelContainer/MainLabel.text = "GO!"
+	vibrate(0.5, 1, 0.1)
 	emit_signal("countdown_short_ended")
 	await get_tree().create_timer(0.3).timeout
 	$Overlay/MainLabelContainer/MainLabel.text = ""
@@ -217,12 +232,16 @@ func start_countdownlong():
 	$Overlay/CountdownLong.play()
 	$Overlay/MainLabelContainer/MainLabel.show()
 	$Overlay/MainLabelContainer/MainLabel.text = "3"
+	vibrate(0.5, 0, 0.2)
 	await get_tree().create_timer(0.7).timeout
 	$Overlay/MainLabelContainer/MainLabel.text = "2"
+	vibrate(0.5, 0, 0.2)
 	await get_tree().create_timer(0.7).timeout
 	$Overlay/MainLabelContainer/MainLabel.text = "1"
+	vibrate(0.5, 0, 0.2)
 	await get_tree().create_timer(0.7).timeout
 	$Overlay/MainLabelContainer/MainLabel.text = "GO!"
+	vibrate(0.5, 1, 0.2)
 	emit_signal("countdown_long_ended")
 	await get_tree().create_timer(0.3).timeout
 	$Overlay/MainLabelContainer/MainLabel.text = ""
@@ -275,6 +294,7 @@ func update(stamina_p1, stamina_p2, time_left):
 
 
 func show_winner(winner):
+	vibrate(1, 1, 0.5)
 	match winner:
 		0:
 			$Overlay/GameEndUI/WinnerLabelContainer/WinnerLabel.text = "Spieler 1\n gewinnt!"
@@ -299,7 +319,8 @@ func show_winner(winner):
 
 
 func show_remis():
-	pass
+	vibrate(1, 1, 0.5)
+	$Overlay/AnimationPlayer.play("remis")
 
 
 #------------------------------------------------------------------------------------------------------------------------------
@@ -333,23 +354,20 @@ func set_input(player, input_device):
 			$MainMenu/Preparations/PlayerSettings/P1Panel/ChooseSkin.show()
 			$MainMenu/Preparations/PlayerSettings/P2Panel/ChooseInputLabel.show()
 			p2_choose_input = true
-			
+			emit_signal("p1_set_input_device", input_device)
 			match input_device:
 				0:
 					keyboard_is_used = true
 					gamepad1_is_used = false
 					gamepad2_is_used = false
-					
 				1:
 					keyboard_is_used = false
 					gamepad1_is_used = true
 					gamepad2_is_used = false
-					
 				2:
 					keyboard_is_used = false
 					gamepad1_is_used = false
 					gamepad2_is_used = true
-					
 			$MainMenu/MenuAccept.play(0.0)
 			await get_tree().create_timer(1.0).timeout
 			$MainMenu/Preparations/PlayerSettings/P1Panel/ChooseSkin/ReadyButton.disabled = false
@@ -357,6 +375,7 @@ func set_input(player, input_device):
 			p2_choose_input = false
 			$MainMenu/Preparations/PlayerSettings/P2Panel/ChooseInputLabel.hide()
 			$MainMenu/Preparations/PlayerSettings/P2Panel/ChooseSkin.show()
+			emit_signal("p2_set_input_device", input_device)
 			match input_device:
 				0:
 					keyboard_is_used = true
@@ -373,12 +392,16 @@ func set_input(player, input_device):
 func init_game():
 		$Overlay/CountdownShort.play(0.0)
 		$MainMenu/Preparations/PlayerSettings/VersusLabel.text = "3"
+		vibrate(0.5, 0, 0.1)
 		await get_tree().create_timer(0.3).timeout
 		$MainMenu/Preparations/PlayerSettings/VersusLabel.text = "2"
+		vibrate(0.5, 0, 0.1)
 		await get_tree().create_timer(0.3).timeout
 		$MainMenu/Preparations/PlayerSettings/VersusLabel.text = "1"
+		vibrate(0.5, 0, 0.1)
 		await get_tree().create_timer(0.3).timeout
 		$MainMenu/Preparations/PlayerSettings/VersusLabel.text = "GO!"
+		vibrate(0.5, 1, 0.1)
 		await get_tree().create_timer(0.3).timeout
 		settings["p1_skin"] = p1_skin
 		settings["p2_skin"] = p2_skin
@@ -404,6 +427,14 @@ func init_game():
 			$Overlay/TimeContainer/Time.hide()
 
 
+func vibrate(weak: float, strong: float, time: float):
+	if vibration_enabled:
+		if gamepad1_is_used:
+			Input.start_joy_vibration(0, weak, strong, time)
+		if gamepad2_is_used:
+			Input.start_joy_vibration(1, weak, strong, time)
+
+
 #------------------------------------------------------------------------------------------------------------------------------
 #
 # video functions
@@ -411,7 +442,194 @@ func init_game():
 #------------------------------------------------------------------------------------------------------------------------------
 
 
+@onready var resolution_option = $Options/TabContainer/Video/VBoxContainer/Resolution/OptionButton
+@onready var displaymode_option = $Options/TabContainer/Video/VBoxContainer/Displaymode/OptionButton
+@onready var screen_option = $Options/TabContainer/Video/VBoxContainer/Screen/VBoxContainer/HSlider
+@onready var screen_label = $Options/TabContainer/Video/VBoxContainer/Screen/Label
+@onready var vsync_option = $"Options/TabContainer/Video/VBoxContainer/V-Sync/OptionButton"
+@onready var resolution_container = $Options/TabContainer/Video/VBoxContainer/Resolution
+@onready var resolution_seperator = $Options/TabContainer/Video/VBoxContainer/HSeparator
+@onready var displaymode_container = $Options/TabContainer/Video/VBoxContainer/Displaymode
+@onready var displaymode_seperator = $Options/TabContainer/Video/VBoxContainer/HSeparator2
+@onready var screen_container = $Options/TabContainer/Video/VBoxContainer/Screen
+@onready var screen_seperator = $Options/TabContainer/Video/VBoxContainer/HSeparator3
+@onready var vsync_container = $"Options/TabContainer/Video/VBoxContainer/V-Sync"
 
+
+func initiate_display_server():
+	DisplayServer.mouse_set_mode(DisplayServer.MOUSE_MODE_HIDDEN)
+	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
+	if DisplayServer.get_name() == "Windows" or DisplayServer.get_name() == "X11":
+		is_pc = true
+		change_video_settings_visibility(true, true, true, true)
+		screen = DisplayServer.get_primary_screen()
+		DisplayServer.window_set_current_screen(screen)
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+		screen_size = DisplayServer.screen_get_size(screen)
+		window_size = DisplayServer.window_get_size()
+		resolution_option.disabled = true
+		resolution_option.select(0)
+		check_resolutions()
+	else:
+		is_pc = false
+		change_video_settings_visibility(false, false, false, true)
+
+
+func change_video_settings_visibility(res: bool, dis: bool, scr: bool, vsy: bool):
+	if res:
+		resolution_container.show()
+		resolution_seperator.show()
+	else:
+		resolution_container.hide()
+		resolution_seperator.hide()
+	
+	
+	if dis:
+		displaymode_container.show()
+		displaymode_seperator.show()
+	else:
+		displaymode_container.hide()
+		displaymode_seperator.hide()
+	
+	
+	if scr:
+		screen_container.show()
+		screen_seperator.show()
+	else:
+		screen_container.hide()
+		screen_seperator.hide()
+	
+	
+	if vsy:
+		vsync_container.show()
+	else:
+		vsync_container.hide()
+
+
+func check_resolutions():
+	screen_option.set_max(DisplayServer.get_screen_count()-1)
+	screen_option.value = screen
+	
+	if screen_size.x < 960 or screen_size.y < 540:
+		resolution_option.select(0)
+		resolution_option.disabled = true
+	elif screen_size.x < 1280 or screen_size.y < 720:
+		resolution_option.set_item_disabled(1, true)
+		resolution_option.set_item_disabled(2, true)
+		resolution_option.set_item_disabled(3, true)
+		resolution_option.set_item_disabled(4, true)
+		resolution_option.set_item_disabled(5, true)
+		resolution_option.set_item_disabled(6, false)
+	elif screen_size.x < 1600 or screen_size.y < 900:
+		resolution_option.set_item_disabled(1, true)
+		resolution_option.set_item_disabled(2, true)
+		resolution_option.set_item_disabled(3, true)
+		resolution_option.set_item_disabled(4, true)
+		resolution_option.set_item_disabled(5, false)
+		resolution_option.set_item_disabled(6, false)
+	elif screen_size.x < 1920 or screen_size.y < 1080:
+		resolution_option.set_item_disabled(1, true)
+		resolution_option.set_item_disabled(2, true)
+		resolution_option.set_item_disabled(3, true)
+		resolution_option.set_item_disabled(4, false)
+		resolution_option.set_item_disabled(5, false)
+		resolution_option.set_item_disabled(6, false)
+	elif screen_size.x < 2560 or screen_size.y < 1440:
+		resolution_option.set_item_disabled(1, true)
+		resolution_option.set_item_disabled(2, true)
+		resolution_option.set_item_disabled(3, false)
+		resolution_option.set_item_disabled(4, false)
+		resolution_option.set_item_disabled(5, false)
+		resolution_option.set_item_disabled(6, false)
+	elif screen_size.x < 3840 or screen_size.y < 2160:
+		resolution_option.set_item_disabled(1, true)
+		resolution_option.set_item_disabled(2, false)
+		resolution_option.set_item_disabled(3, false)
+		resolution_option.set_item_disabled(4, false)
+		resolution_option.set_item_disabled(5, false)
+		resolution_option.set_item_disabled(6, false)
+	else:
+		resolution_option.set_item_disabled(1, false)
+		resolution_option.set_item_disabled(2, false)
+		resolution_option.set_item_disabled(3, false)
+		resolution_option.set_item_disabled(4, false)
+		resolution_option.set_item_disabled(5, false)
+		resolution_option.set_item_disabled(6, false)
+
+
+func set_window_pos_and_size(size):
+	DisplayServer.window_set_size(size)
+	if screen_size == size:
+		_on_displaymode_selected(2)
+	else:
+		DisplayServer.window_set_position(Vector2(DisplayServer.screen_get_position()) + screen_size * 0.5 - size * 0.5)
+
+
+func _on_displaymode_selected(index):
+	resolution_option.select(0)
+	screen_size = DisplayServer.screen_get_size(screen)
+	displaymode = index
+	match index:
+		0:
+			resolution_option.disabled = false
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+			DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, false)
+			DisplayServer.window_set_size(screen_size*0.5)
+			DisplayServer.window_set_position(screen_size*0.25)
+		1:
+			resolution_option.disabled = false
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+			DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, true)
+			DisplayServer.window_set_size(screen_size*0.5)
+			DisplayServer.window_set_position(screen_size*0.25)
+		2:
+			resolution_option.disabled = true
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+		3:
+			resolution_option.disabled = true
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN)
+	DisplayServer.window_set_current_screen(screen)
+	window_size = DisplayServer.window_get_size()
+	check_resolutions()
+
+
+func _on_resolution_selected(index):
+	screen_size = DisplayServer.screen_get_size(screen)
+	window_size = DisplayServer.window_get_size()
+	match index:
+		0:
+			DisplayServer.window_set_size(screen_size*0.5)
+			DisplayServer.window_set_position(screen_size*0.25)
+		1:
+			set_window_pos_and_size(Vector2i(3840, 2160))
+		2:
+			set_window_pos_and_size(Vector2i(2560, 1440))
+		3:
+			set_window_pos_and_size(Vector2i(1920, 1080))
+		4:
+			set_window_pos_and_size(Vector2i(1600, 900))
+		5:
+			set_window_pos_and_size(Vector2i(1280, 720))
+		6:
+			set_window_pos_and_size(Vector2i(960, 540))
+	DisplayServer.window_set_current_screen(screen)
+
+
+func _on_screen_changed(value):
+	screen = value
+	DisplayServer.window_set_current_screen(screen)
+	displaymode_option.select(0)
+	_on_displaymode_selected(0)
+
+
+func _on_v_sync_selected(index):
+	match index:
+		0:
+			DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
+		1:
+			DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
+		2:
+			DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ADAPTIVE)
 
 
 #------------------------------------------------------------------------------------------------------------------------------
@@ -432,6 +650,8 @@ func _on_options_pressed():
 	$MainMenu/Panel/MainNavigation/Options.release_focus()
 	$Options.show()
 	$Options/AnimationPlayer.play("start_nav_to_options")
+	options_tab = 0
+	$Options/TabContainer.current_tab = options_tab
 	var master_bus_volume = snapped(AudioServer.get_bus_volume_db(AudioServer.get_bus_index("Master")), 0.1)
 	var sfx_bus_volume = snapped(AudioServer.get_bus_volume_db(AudioServer.get_bus_index("Soundeffects")), 0.1)
 	var music_bus_volume = snapped(AudioServer.get_bus_volume_db(AudioServer.get_bus_index("Music")), 0.1)
@@ -456,7 +676,6 @@ func _on_options_pressed():
 	$Options/TabContainer/Audio/SFX/VBoxContainer/HSlider.value = sfx_bus_volume
 	$Options/TabContainer/Audio/Music/VBoxContainer/HSlider.value = music_bus_volume
 	$Options/TabContainer/Audio/MenuSFX/VBoxContainer/HSlider.value = menu_sfx_bus_volume
-	is_in_options = true
 
 
 func _on_quit_game_pressed():
@@ -568,6 +787,8 @@ func _on_next_map_pressed():
 		2:
 			map_count = 3
 		3:
+			map_count = 4
+		4:
 			map_count = 0
 	$MainMenu/Preparations/MapSettings/MapName.text = map_names[map_count]
 	$MainMenu/Preparations/MapSettings/AnimatedSprite2D.frame = map_count
@@ -577,13 +798,15 @@ func _on_prev_map_pressed():
 	$MainMenu/MenuAccept.play(0.0)
 	match map_count:
 		0:
-			map_count = 3
+			map_count = 4
 		1:
 			map_count = 0
 		2:
 			map_count = 1
 		3:
 			map_count = 2
+		4:
+			map_count = 3
 	$MainMenu/Preparations/MapSettings/MapName.text = map_names[map_count]
 	$MainMenu/Preparations/MapSettings/AnimatedSprite2D.frame = map_count
 
@@ -816,11 +1039,11 @@ func _on_maxstamina_value_changed(value):
 	elif value < 100:
 		$MainMenu/Preparations/GameSettings/VBoxContainer/MaxStamina/Label.text = "Maximale Ausdauer: Niedrig"
 	elif value == 100:
-			$MainMenu/Preparations/GameSettings/VBoxContainer/MaxStamina/Label.text = "Maximale Ausdauer: Normal"
+		$MainMenu/Preparations/GameSettings/VBoxContainer/MaxStamina/Label.text = "Maximale Ausdauer: Normal"
 	elif value > 190:
-			$MainMenu/Preparations/GameSettings/VBoxContainer/MaxStamina/Label.text = "Maximale Ausdauer: Marathon"
+		$MainMenu/Preparations/GameSettings/VBoxContainer/MaxStamina/Label.text = "Maximale Ausdauer: Marathon"
 	elif value > 100:
-			$MainMenu/Preparations/GameSettings/VBoxContainer/MaxStamina/Label.text = "Maximale Ausdauer: Hoch"
+		$MainMenu/Preparations/GameSettings/VBoxContainer/MaxStamina/Label.text = "Maximale Ausdauer: Hoch"
 
 
 func _on_newstamina_value_changed(value):
@@ -829,12 +1052,12 @@ func _on_newstamina_value_changed(value):
 		$MainMenu/Preparations/GameSettings/VBoxContainer/NewStamina/Label.text = "Ausdauererholung:\nSchneckentempo"
 	elif value < 0.6:
 		$MainMenu/Preparations/GameSettings/VBoxContainer/NewStamina/Label.text = "Ausdauererholung: Langsam"
-	elif value == 0.6:
-			$MainMenu/Preparations/GameSettings/VBoxContainer/NewStamina/Label.text = "Ausdauererholung: Normal"
+	elif value < 0.7:
+		$MainMenu/Preparations/GameSettings/VBoxContainer/NewStamina/Label.text = "Ausdauererholung: Normal"
 	elif value > 0.8:
-			$MainMenu/Preparations/GameSettings/VBoxContainer/NewStamina/Label.text = "Ausdauererholung:\nSchallgeschwindigkeit"
+		$MainMenu/Preparations/GameSettings/VBoxContainer/NewStamina/Label.text = "Ausdauererholung:\nSchallgeschwindigkeit"
 	elif value > 0.6:
-			$MainMenu/Preparations/GameSettings/VBoxContainer/NewStamina/Label.text = "Ausdauererholung: Schnell"
+		$MainMenu/Preparations/GameSettings/VBoxContainer/NewStamina/Label.text = "Ausdauererholung: Schnell"
 
 
 func _on_gamesettings_continue_button_pressed():
@@ -912,6 +1135,14 @@ func _on_menu_sfx_value_changed(value):
 
 
 #------------------------------------------------------------------------------------------------------------------------------
+
+
+func _on_vibration_toggled(button_pressed):
+	vibration_enabled = button_pressed
+	emit_signal("vibration_changed", button_pressed)
+
+
+#------------------------------------------------------------------------------------------------------------------------------
 #
 # animations players
 #
@@ -933,6 +1164,8 @@ func _on_options_animation_player_animation_finished(anim_name):
 	match anim_name:
 		"start_nav_to_options":
 			$Options/BackButton.disabled = false
+			resolution_option.grab_focus()
+			is_in_options = true
 		"options_to_start_nav":
 			$Options.hide()
 			$MainMenu/Panel/MainNavigation/Play.grab_focus()
@@ -999,5 +1232,11 @@ func _on_overlay_animation_player_animation_finished(anim_name):
 	match anim_name:
 		"p1_won":
 			$Overlay/GameEndUI/BackButton.grab_focus()
+			emit_signal("game_over")
 		"p2_won":
 			$Overlay/GameEndUI/BackButton.grab_focus()
+			emit_signal("game_over")
+		"remis":
+			$Overlay/GameEndUI/BackButton.grab_focus()
+			emit_signal("game_over")
+
