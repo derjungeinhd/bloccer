@@ -3,10 +3,10 @@ A boxing Arcade game. Kick your enemy into his own goal to win.
 
 ## What you need
 
-The Game only has a 2P-Multiplayer. You will need at least 1 Controller to play. 
-I recommend to use 2 Controllers, because Bloccer is optimized for it.
+The Game only has a 2P-Multiplayer. You will need at least 1 Controller to play. Also, you will need another Controller or a keyboard.
+I recommend to use 2 Controllers, because Bloccer is optimized for it. Touch & Mouse controls aren't supported.
 
-Currently, Bloccer is available for Windows as a [Download](https://github.com/derjungeinhd/bloccer/releases/) and playable in the Browser on [itch.io](https://derjungeinhd.itch.io/bloccer)
+Currently, Bloccer is available for Windows as a [download](https://github.com/derjungeinhd/bloccer/releases/) and playable in the Browser on [itch.io](https://derjungeinhd.itch.io/bloccer)
 
 **NOTE: There is no English translation for Bloccer yet.**
 
