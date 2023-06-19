@@ -1,4 +1,15 @@
-                    GNU GENERAL PUBLIC LICENSE
+ This project is multi-licenced:
+ 
+ - The source code is licensed under the GNU General Public License v3.0.
+ - All art assets (excluding fonts) are licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
+ - All fonts are licensed under each license provided by each font. To view the license of a font, navigate to the licence.txt in the folder of the font.
+ 
+ 
+ 
+ 
+ 
+ 
+                     GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
 
  Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
@@ -672,3 +683,14 @@ may consider it more useful to permit linking proprietary applications with
 the library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.  But first, please read
 <https://www.gnu.org/licenses/why-not-lgpl.html>.
+
+
+
+
+
+
+
+
+Creative Commons Attribution-ShareAlike 4.0 International License:
+        
+To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/4.0/ or send a letter to Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
