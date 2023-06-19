@@ -125,7 +125,7 @@ func _input(event):
 			await get_tree().create_timer(0.1).timeout
 			match options_tab:
 				0:
-					resolution_option.grab_focus()
+					option_focus_button.grab_focus()
 				1:
 					$Options/TabContainer/Audio/Master/VBoxContainer/HSlider.grab_focus()
 				2:
@@ -140,7 +140,7 @@ func _input(event):
 			await get_tree().create_timer(0.1).timeout
 			match options_tab:
 				0:
-					resolution_option.grab_focus()
+					option_focus_button.grab_focus()
 				1:
 					$Options/TabContainer/Audio/Master/VBoxContainer/HSlider.grab_focus()
 				2:
@@ -454,6 +454,7 @@ func vibrate(weak: float, strong: float, time: float):
 @onready var screen_container = $Options/TabContainer/Video/VBoxContainer/Screen
 @onready var screen_seperator = $Options/TabContainer/Video/VBoxContainer/HSeparator3
 @onready var vsync_container = $"Options/TabContainer/Video/VBoxContainer/V-Sync"
+var option_focus_button
 
 
 func initiate_display_server():
@@ -462,6 +463,7 @@ func initiate_display_server():
 	if DisplayServer.get_name() == "Windows" or DisplayServer.get_name() == "X11":
 		is_pc = true
 		change_video_settings_visibility(true, true, true, true)
+		option_focus_button = resolution_option
 		screen = DisplayServer.get_primary_screen()
 		DisplayServer.window_set_current_screen(screen)
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
@@ -471,8 +473,11 @@ func initiate_display_server():
 		resolution_option.select(0)
 		check_resolutions()
 	else:
+		if DisplayServer.get_name() == "web":
+			$MainMenu/Panel/MainNavigation/QuitGame.hide()
 		is_pc = false
 		change_video_settings_visibility(false, false, false, true)
+		option_focus_button = vsync_option
 
 
 func change_video_settings_visibility(res: bool, dis: bool, scr: bool, vsy: bool):
@@ -1164,7 +1169,7 @@ func _on_options_animation_player_animation_finished(anim_name):
 	match anim_name:
 		"start_nav_to_options":
 			$Options/BackButton.disabled = false
-			resolution_option.grab_focus()
+			option_focus_button.grab_focus()
 			is_in_options = true
 		"options_to_start_nav":
 			$Options.hide()
